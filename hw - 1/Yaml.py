@@ -83,3 +83,21 @@ for i in Xeh.filter('in_progress'):
   print(i)
 
 
+class WSGIApplication:
+
+    def __init__(self, environment, start_response):
+        print('Get request')
+        self.environment = environment
+        self.start_response = start_response
+        self.headers = [
+            ('Content-type', 'text/plain; charset=utf-8')
+        ]
+
+    def __iter__(self):
+        List_of_Tasks = list()
+        print('Wait for response')
+        for data in dataset:
+            task = Task(data[0], data[2], data[1])
+            if task.remaining < datetime.timedelta(days=3) and task.state == 'in_progress':
+                List_of_Tasks += task.title + '\n'
+        yield List_of_Tasks.encode('utf-8')
